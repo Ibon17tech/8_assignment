@@ -83,14 +83,14 @@ def submit():
         return f"Error: {e}"
 
 if __name__ == '__main__':
+    # 1. Botni alohida oqimda ishga tushiramiz
     t = threading.Thread(target=bot_polling)
     t.daemon = True
     t.start()
     
-    # Render portni o'zi tayinlaydi, 5000 esa zaxira (local uchun)
+    # 2. Render portni o'zi beradi, shuni olamiz
     port = int(os.environ.get("PORT", 5000))
-    app.run(host='0.0.0.0', port=port)
-
-    # Flask serverni ishga tushiramiz
-    # use_reloader=False bo'lishi shart, aks holda bot ikki marta ishga tushib qoladi
-    app.run(debug=True, use_reloader=False)
+    
+    # 3. FAQAT BITTA app.run bo'lishi kerak!
+    # Render-da debug=False bo'lgani ma'qul
+    app.run(host='0.0.0.0', port=port, debug=False, use_reloader=False)
