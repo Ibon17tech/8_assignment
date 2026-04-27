@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yangiyul Tour - Official</title>
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css">
+
+    <style>
+        body, html { height: 100%; margin: 0; font-family: 'Segoe UI', sans-serif; overflow-x: hidden; }
+        .bg-slider {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1; background-size: cover; background-position: center;
+            transition: background-image 2s ease-in-out; background-color: #333;
+        }
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.45); z-index: 0; }
+        .container { position: relative; z-index: 1; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        .form-card {
+            background: rgba(255, 255, 255, 0.88); backdrop-filter: blur(15px);
+            padding: 30px; border-radius: 25px; width: 100%; max-width: 380px;
+            text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+        }
+        /* Google Translate stili */
+        #google_translate_element { margin-bottom: 15px; }
+        .input-group { margin-bottom: 12px; text-align: left; }
+        input, select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; }
+        .iti { width: 100%; }
+        button {
+            width: 100%; padding: 12px; background: #ff7675; color: white; border: none;
+            border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.3s;
+        }
+        button:hover { background: #d63031; }
+        label { font-size: 11px; color: #7f8c8d; margin-left: 5px; display: block; }
+        .map-btn {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    width: 60px;
+    height: 60px;
+    background: #ff7675;
+    color: rgb(82, 32, 234);
+    font-size: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    text-decoration: none;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+    transition: 0.3s;
+    z-index: 999;
+}
+
+.map-btn:hover {
+    background: #d63031;
+    transform: scale(1.1);
+}
+    </style>
+</head>
+<body>
+
+    <div class="bg-slider" id="slider"></div>
+    <div class="overlay"></div>
+
+    <div class="container">
+        <div class="form-card">
+            <div id="google_translate_element"></div>
+
+            <h1>Yangiyul Tour 🏛️</h1>
+            
+            <form action="/submit" method="POST" id="tourForm">
+                <input type="text" name="first_name" placeholder="First Name" required style="margin-bottom:10px;">
+                <input type="text" name="last_name" placeholder="Last Name" required style="margin-bottom:10px;">
+                
+                <div class="input-group">
+                    <input type="tel" id="phone" required>
+                </div>
+
+                <div class="input-group">
+                    <label>Number of Guests:</label>
+                    <select name="guests">
+                        <option value="1">1 Person</option>
+                        <option value="2">2 Persons</option>
+                        <option value="3">3 Persons</option>
+                        <option value="4+">4+ Persons</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label>Travel Date:</label>
+                    <input type="date" name="travel_date" id="datePicker" required>
+                </div>
+
+                <button type="submit" id="submitBtn">Confirm Booking</button>
+                <a href="https://www.google.com/maps?q=41.1125,69.0472" target="_blank" class="map-btn">
+                    
+    📍
+</a>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({pageLanguage: 'en', includedLanguages: 'uz,ru,en'}, 'google_translate_element');
+        }
+    </script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+    <script>
+        const phoneInput = window.intlTelInput(document.querySelector("#phone"), {
+            preferredCountries: ["uz", "us", "ru"],
+            utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
+        });
+
+        flatpickr("#datePicker", { minDate: "today" });
+
+        const images = ["/static/rasm1.jpg", "/static/rasm2.jpg", "/static/rasm3.jpg", "/static/rasm4.jpg"];
+        let curr = 0;
+        function changeBg() {
+            document.getElementById('slider').style.backgroundImage = `url('${images[curr]}')`;
+            curr = (curr + 1) % images.length;
+        }
+        changeBg(); setInterval(changeBg, 15000);
+
+        document.getElementById("tourForm").onsubmit = function() {
+            const hidden = document.createElement("input");
+            hidden.type = "hidden"; hidden.name = "full_phone";
+            hidden.value = phoneInput.getNumber();
+            this.appendChild(hidden);
+            document.getElementById('submitBtn').innerText = 'Sending...';
+        };
+    </script>
+</body>
+</html>
